@@ -288,6 +288,57 @@ a {
   box-shadow: 0 22px 80px rgba(0, 0, 0, 0.12);
 }
 
+.company-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.contact-doc-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.doc-image-card {
+  margin: 0;
+  background: #fff;
+  border: 1px solid rgba(0, 117, 128, 0.08);
+  border-radius: 24px;
+  padding: 1rem;
+  box-shadow: 0 14px 40px rgba(20, 40, 60, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.doc-image-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
+}
+
+.doc-image-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+
+.doc-image-card figcaption {
+  padding: 0.85rem 0.25rem 0.25rem;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.service-cards article img.service-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
 .about-section {
   background: #fff;
   border-radius: 34px;
@@ -437,11 +488,18 @@ a {
   .awards-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .company-profile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 620px) {
   .gallery-grid,
   .awards-grid {
+    grid-template-columns: 1fr;
+  }
+  .company-profile-grid,
+  .contact-doc-grid {
     grid-template-columns: 1fr;
   }
 }
