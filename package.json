@@ -1,0 +1,27 @@
+{
+  "name": "hapitec-investment-limited",
+  "version": "1.0.0",
+  "description": "Official Web Application for Hapitec Investment Limited - Agriculture & Construction Solutions in Zambia",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "hapitec",
+    "zambia",
+    "piggery",
+    "agriculture",
+    "construction",
+    "copperbelt"
+  ],
+  "author": "Hapitec Investment Limited",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "vite": "^5.2.0"
+  }
+}

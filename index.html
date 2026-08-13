@@ -289,18 +289,6 @@
     <p>Hapitec Investment Limited © 2026 — Building sustainable agriculture and construction solutions in Zambia.</p>
   </footer>
 
-  <script>
-    const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const siteHeader = document.querySelector('.site-header');
-    const mainNav = document.querySelector('.main-nav');
-    menuToggle?.addEventListener('click', () => {
-      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!expanded));
-      siteHeader.classList.toggle('nav-open');
-      if (mainNav) {
-        mainNav.style.display = expanded ? 'none' : 'flex';
-      }
-    });
-  </script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
