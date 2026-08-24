@@ -29,26 +29,31 @@ Hapitec Investment Limited/
 ## 🛠️ Getting Started
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
 
 ### Development Commands
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Start dev server**:
+
    ```bash
    npm run dev
    ```
 
 3. **Build for production**:
+
    ```bash
    npm run build
    ```
 
 4. **Preview production build**:
+
    ```bash
    npm run preview
    ```
@@ -59,4 +64,5 @@ Hapitec Investment Limited/
    ```
 
 ---
-*© 2026 Hapitec Investment Limited. All rights reserved.*
+
+_© 2026 Hapitec Investment Limited. All rights reserved._

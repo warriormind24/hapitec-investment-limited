@@ -23,5 +23,8 @@
   "devDependencies": {
     "prettier": "^3.2.5",
     "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "jspdf": "^4.2.1"
   }
 }
