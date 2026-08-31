@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initHeaderScroll();
   initGalleryLightbox();
+  initGalleryFilter();
   initSmoothScroll();
   initInquiryForm();
   initInvoiceForm();
@@ -175,6 +176,32 @@ function initGalleryLightbox() {
 }
 
 /**
+ * Gallery category filter
+ */
+function initGalleryFilter() {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('.gallery-grid a[data-category]');
+  if (!filterBtns.length || !items.length) return;
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-filter');
+      items.forEach((item) => {
+        const category = item.getAttribute('data-category');
+        if (filter === 'all' || category === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+}
+
+/**
  * Smooth scrolling for internal anchor links
  */
 function initSmoothScroll() {
@@ -215,7 +242,7 @@ function initInquiryForm() {
     const subject = formData.get('subject');
     const message = formData.get('message');
 
-    const mailtoLink = `mailto:info@hapitecinvestment.com?subject=${encodeURIComponent(`[${subject}] Inquiry from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${formData.get('phone')}\n\nMessage:\n${message}`)}`;
+    const mailtoLink = `mailto:hapiteclimited@gmail.com?subject=${encodeURIComponent(`[${subject}] Inquiry from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${formData.get('phone')}\n\nMessage:\n${message}`)}`;
 
     window.location.href = mailtoLink;
 
@@ -235,6 +262,8 @@ function initInvoiceForm() {
   const itemsContainer = document.getElementById('invoice-items');
   const addItemBtn = document.getElementById('add-item-btn');
   const generateBtn = document.getElementById('generate-invoice-btn');
+  const productSelect = document.getElementById('product-select');
+  const addProductBtn = document.getElementById('add-product-btn');
 
   const previewCustomer = document.getElementById('preview-customer');
   const previewAddress = document.getElementById('preview-address');
@@ -305,13 +334,13 @@ function initInvoiceForm() {
     if (previewTotal) previewTotal.textContent = `${symbol}${total.toFixed(2)}`;
   };
 
-  const addItemRow = () => {
+  const addItemRow = (description = '', price = '') => {
     const div = document.createElement('div');
     div.className = 'invoice-item';
     div.innerHTML = `
-      <input type="text" placeholder="Item description" class="item-desc" required />
+      <input type="text" placeholder="Item description" class="item-desc" value="${description}" required />
       <input type="number" placeholder="Qty" class="item-qty" min="1" value="1" required />
-      <input type="number" placeholder="Price" class="item-price" min="0" step="0.01" required />
+      <input type="number" placeholder="Price" class="item-price" min="0" step="0.01" value="${price}" required />
       <button type="button" class="item-remove" aria-label="Remove item">&times;</button>
     `;
     itemsContainer.appendChild(div);
@@ -328,7 +357,19 @@ function initInvoiceForm() {
   };
 
   if (addItemBtn) {
-    addItemBtn.addEventListener('click', addItemRow);
+    addItemBtn.addEventListener('click', () => addItemRow());
+  }
+
+  if (addProductBtn && productSelect) {
+    addProductBtn.addEventListener('click', () => {
+      const value = productSelect.value;
+      if (!value) return;
+
+      const [description, pricePart] = value.split(' | ');
+      const price = pricePart ? pricePart.replace(/[^0-9.]/g, '') : '';
+      addItemRow(description, price);
+      productSelect.value = '';
+    });
   }
 
   itemsContainer.querySelectorAll('.item-remove').forEach((btn) => {
@@ -384,16 +425,18 @@ function initInvoiceForm() {
 
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
+      doc.addImage('hapitec-company-logo/Hapitec Fully Transparent.png', 'PNG', 14, 10, 20, 20);
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
       doc.setTextColor(0, 117, 128);
-      doc.text('Hapitec Investment Limited', 14, 20);
+      doc.text('Hapitec Investment Limited', 42, 18);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(90, 107, 122);
-      doc.text('Solwezi Road, Copperbelt Province, Zambia', 14, 26);
-      doc.text('info@hapitecinvestment.com | +260 978 000 000', 14, 31);
+      doc.text('Solwezi Road, Copperbelt Province, Zambia', 42, 24);
+      doc.text('hapiteclimited@gmail.com | +260 967089743/0971213302', 42, 29);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
