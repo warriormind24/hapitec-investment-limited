@@ -16,7 +16,23 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initActiveNav();
   initBackToTop();
+  initImageLoaded();
 });
+
+/**
+ * Add loaded class to lazy images when they finish loading
+ */
+function initImageLoaded() {
+  const images = document.querySelectorAll('img[loading="lazy"]');
+  images.forEach((img) => {
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'));
+      img.addEventListener('error', () => img.classList.add('loaded'));
+    }
+  });
+}
 
 /**
  * Animated site opening intro
@@ -425,7 +441,14 @@ function initInvoiceForm() {
 
       const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-      doc.addImage('hapitec-company-logo/Hapitec Fully Transparent.png', 'PNG', 14, 10, 20, 20);
+      doc.addImage(
+        new URL('hapitec-company-logo/Hapitec Fully Transparent.png', document.baseURI).href,
+        'PNG',
+        14,
+        10,
+        20,
+        20
+      );
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(18);
