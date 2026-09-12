@@ -199,6 +199,11 @@ function initGalleryFilter() {
   const items = document.querySelectorAll('.gallery-grid a[data-category]');
   if (!filterBtns.length || !items.length) return;
 
+  // Hide all items by default when page loads
+  items.forEach(item => {
+    item.classList.add('hidden');
+  });
+
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => b.classList.remove('active'));
