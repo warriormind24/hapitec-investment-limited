@@ -110,6 +110,7 @@ function initHeaderScroll() {
 function initGalleryLightbox() {
   const selectors = [
     '.gallery-grid a',
+    '.facebook-post-photos a',
     '.awards-grid a',
     '.service-card-img',
     '.about-image img',
