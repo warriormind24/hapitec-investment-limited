@@ -725,6 +725,20 @@
               />
             </div>
             <div class="form-group">
+              <label for="inv-delivery-point">Delivery Point *</label>
+              <input
+                type="text"
+                id="inv-delivery-point"
+                name="deliveryPoint"
+                placeholder="Choose a point on the map"
+                readonly
+                aria-required="true"
+                aria-describedby="delivery-map-status"
+              />
+              <div id="delivery-map" class="delivery-map" aria-label="Delivery point map"></div>
+              <p id="delivery-map-status" class="delivery-map-status" aria-live="polite">No delivery point selected</p>
+            </div>
+            <div class="form-group">
               <label>Quick Add Product</label>
               <div class="quick-add-row">
                 <select id="product-select" class="product-select">
@@ -846,6 +860,7 @@
                   <p id="preview-address">-</p>
                   <p id="preview-email">-</p>
                   <p id="preview-phone">-</p>
+                  <p><strong>Delivery Point:</strong> <span id="preview-delivery-point">-</span></p>
                 </div>
                 <div>
                   <div>

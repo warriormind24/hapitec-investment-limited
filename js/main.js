@@ -3,6 +3,8 @@
  */
 
 import { jsPDF } from 'jspdf';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   initSiteIntro();
@@ -289,6 +291,7 @@ function initInvoiceForm() {
 
   const previewCustomer = document.getElementById('preview-customer');
   const previewAddress = document.getElementById('preview-address');
+  const previewDeliveryPoint = document.getElementById('preview-delivery-point');
   const previewEmail = document.getElementById('preview-email');
   const previewPhone = document.getElementById('preview-phone');
   const previewDate = document.getElementById('preview-date');
@@ -299,6 +302,9 @@ function initInvoiceForm() {
   const previewTotal = document.getElementById('preview-total');
   const previewInvNumber = document.getElementById('preview-inv-number');
   const invDateInput = document.getElementById('inv-date');
+  const deliveryPointInput = document.getElementById('inv-delivery-point');
+  const deliveryMapContainer = document.getElementById('delivery-map');
+  const deliveryMapStatus = document.getElementById('delivery-map-status');
 
   if (!form || !itemsContainer) return;
 
@@ -313,6 +319,7 @@ function initInvoiceForm() {
   const updatePreview = () => {
     const customer = form.querySelector('#inv-customer')?.value || '-';
     const address = form.querySelector('#inv-address')?.value || '-';
+    const deliveryPoint = form.querySelector('#inv-delivery-point')?.value || '-';
     const email = form.querySelector('#inv-email')?.value || '-';
     const phone = form.querySelector('#inv-phone')?.value || '-';
     const date = form.querySelector('#inv-date')?.value || '-';
@@ -323,6 +330,7 @@ function initInvoiceForm() {
 
     if (previewCustomer) previewCustomer.textContent = customer;
     if (previewAddress) previewAddress.textContent = address;
+    if (previewDeliveryPoint) previewDeliveryPoint.textContent = deliveryPoint;
     if (previewEmail) previewEmail.textContent = email;
     if (previewPhone) previewPhone.textContent = phone;
     if (previewDate) previewDate.textContent = date;
@@ -356,6 +364,35 @@ function initInvoiceForm() {
     if (previewTotal) previewTotal.textContent = `${symbol}${total.toFixed(2)}`;
   };
 
+  let deliveryMarker;
+  let deliveryMap;
+  if (deliveryMapContainer) {
+    deliveryMap = L.map(deliveryMapContainer).setView([-12.18, 26.4], 9);
+    deliveryMapContainer.setAttribute('tabindex', '0');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(deliveryMap);
+
+    deliveryMap.on('click', ({ latlng }) => {
+      const latitude = latlng.lat.toFixed(6);
+      const longitude = latlng.lng.toFixed(6);
+      deliveryPointInput.value = `${latitude}, ${longitude}`;
+      deliveryMarker?.setLatLng(latlng);
+      if (!deliveryMarker) {
+        deliveryMarker = L.marker(latlng, {
+          icon: L.divIcon({
+            className: 'delivery-map-marker',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11],
+          }),
+        }).addTo(deliveryMap);
+      }
+      if (deliveryMapStatus) deliveryMapStatus.textContent = `Selected point: ${latitude}, ${longitude}`;
+      updatePreview();
+    });
+  }
+
   const addItemRow = (description = '', price = '') => {
     const div = document.createElement('div');
     div.className = 'invoice-item';
@@ -387,10 +424,17 @@ function initInvoiceForm() {
       const value = productSelect.value;
       if (!value) return;
 
+      itemsContainer.querySelectorAll('.invoice-item').forEach((item) => {
+        const description = item.querySelector('.item-desc')?.value.trim();
+        const price = item.querySelector('.item-price')?.value;
+        if (!description && !price) item.remove();
+      });
+
       const [description, pricePart] = value.split(' | ');
       const price = pricePart ? pricePart.replace(/[^0-9.]/g, '') : '';
       addItemRow(description, price);
       productSelect.value = '';
+      updatePreview();
     });
   }
 
@@ -406,8 +450,23 @@ function initInvoiceForm() {
     input.addEventListener('change', updatePreview);
   });
 
+  form.addEventListener('reset', () => {
+    window.setTimeout(() => {
+      deliveryMarker?.remove();
+      deliveryMarker = null;
+      if (deliveryMapStatus) deliveryMapStatus.textContent = 'No delivery point selected';
+      updatePreview();
+    }, 0);
+  });
+
   if (generateBtn) {
     generateBtn.addEventListener('click', () => {
+      if (!deliveryPointInput?.value) {
+        if (deliveryMapStatus) deliveryMapStatus.textContent = 'Choose a delivery point on the map before generating the invoice.';
+        deliveryMapContainer?.focus();
+        return;
+      }
+
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -479,13 +538,15 @@ function initInvoiceForm() {
       doc.text('Bill To:', 14, 42);
       doc.text(customer, 14, 48);
       const address = form.querySelector('#inv-address')?.value || '';
+      const deliveryPoint = form.querySelector('#inv-delivery-point')?.value || '';
       const phone = form.querySelector('#inv-phone')?.value || '';
       const email = form.querySelector('#inv-email')?.value || '';
       if (address) doc.text(address, 14, 54);
       if (email) doc.text(email, 14, 60);
       if (phone) doc.text(phone, 14, 66);
+      if (deliveryPoint) doc.text(`Delivery Point: ${deliveryPoint}`, 14, 72);
 
-      let y = 80;
+      let y = 84;
       doc.setFillColor(241, 165, 48);
       doc.rect(14, y, 182, 8, 'F');
       doc.setFont('helvetica', 'bold');
