@@ -323,7 +323,6 @@ function initInvoiceForm() {
     const email = form.querySelector('#inv-email')?.value || '-';
     const phone = form.querySelector('#inv-phone')?.value || '-';
     const date = form.querySelector('#inv-date')?.value || '-';
-    const taxRate = parseFloat(form.querySelector('#inv-tax')?.value) || 0;
     const discountRate = parseFloat(form.querySelector('#inv-discount')?.value) || 0;
     const currency = form.querySelector('#inv-currency')?.value || 'ZMW';
     const symbol = getCurrencySymbol(currency);
@@ -354,12 +353,11 @@ function initInvoiceForm() {
     if (!rows) rows = '<tr><td colspan="4">Add items to see preview</td></tr>';
     if (previewItems) previewItems.innerHTML = rows;
 
-    const tax = subtotal * (taxRate / 100);
     const discount = subtotal * (discountRate / 100);
-    const total = Math.max(0, subtotal + tax - discount);
+    const total = Math.max(0, subtotal - discount);
 
     if (previewSubtotal) previewSubtotal.textContent = `${symbol}${subtotal.toFixed(2)}`;
-    if (previewTax) previewTax.textContent = `${symbol}${tax.toFixed(2)}`;
+    if (previewTax) previewTax.textContent = 'Inclusive';
     if (previewDiscount) previewDiscount.textContent = `${symbol}${discount.toFixed(2)}`;
     if (previewTotal) previewTotal.textContent = `${symbol}${total.toFixed(2)}`;
   };
@@ -474,7 +472,6 @@ function initInvoiceForm() {
 
       const customer = form.querySelector('#inv-customer')?.value || 'Customer';
       const date = form.querySelector('#inv-date')?.value || today;
-      const taxRate = parseFloat(form.querySelector('#inv-tax')?.value) || 0;
       const discountRate = parseFloat(form.querySelector('#inv-discount')?.value) || 0;
       const currency = form.querySelector('#inv-currency')?.value || 'ZMW';
       const symbol = getCurrencySymbol(currency);
@@ -497,9 +494,8 @@ function initInvoiceForm() {
         return;
       }
 
-      const tax = subtotal * (taxRate / 100);
       const discount = subtotal * (discountRate / 100);
-      const total = Math.max(0, subtotal + tax - discount);
+      const total = Math.max(0, subtotal - discount);
 
       const invNumber = `INV-${Date.now().toString().slice(-6)}`;
       if (previewInvNumber) previewInvNumber.textContent = invNumber;
@@ -577,7 +573,7 @@ function initInvoiceForm() {
       doc.setFont('helvetica', 'normal');
       doc.text(`Subtotal: ${symbol}${subtotal.toFixed(2)}`, 130, y);
       y += 6;
-      doc.text(`Tax: ${symbol}${tax.toFixed(2)}`, 130, y);
+      doc.text('VAT: Inclusive', 130, y);
       y += 6;
       doc.text(`Discount: ${symbol}${discount.toFixed(2)}`, 130, y);
       y += 6;
