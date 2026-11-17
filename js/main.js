@@ -18,23 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initActiveNav();
   initBackToTop();
-  initImageLoaded();
 });
-
-/**
- * Add loaded class to lazy images when they finish loading
- */
-function initImageLoaded() {
-  const images = document.querySelectorAll('img[loading="lazy"]');
-  images.forEach((img) => {
-    if (img.complete) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'));
-      img.addEventListener('error', () => img.classList.add('loaded'));
-    }
-  });
-}
 
 /**
  * Animated site opening intro
@@ -72,12 +56,14 @@ function initMobileMenu() {
   menuToggle.addEventListener('click', () => {
     const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
     menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+    menuToggle.setAttribute('aria-label', isExpanded ? 'Open navigation' : 'Close navigation');
     siteHeader.classList.toggle('nav-open', !isExpanded);
   });
 
   mainNav.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {
       menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Open navigation');
       siteHeader.classList.remove('nav-open');
     });
   });
